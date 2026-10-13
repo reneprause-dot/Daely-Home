@@ -8,7 +8,6 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
   <title>Daely Home – Familienkalender</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body class="min-h-screen">
@@ -25,6 +24,8 @@
       <button class="tab active" data-view="dashboard">Übersicht</button>
       <button class="tab" data-view="calendar">Kalender</button>
       <button class="tab" data-view="tasks">Aufgaben</button>
+      <button class="tab" data-view="people">Personen</button>
+      <button class="tab" data-view="notes">Notizen</button>
       <button class="tab" data-view="settings">Daten &amp; Einstellungen</button>
     </nav>
     <section id="dashboardView" class="view">
@@ -33,6 +34,7 @@
         <article class="panel agenda-panel"><div class="panel-head"><h3>Deine Agenda</h3><span class="pill" id="eventCount">0 Termine</span></div><div id="todayAgenda" class="agenda-list"></div></article>
         <article class="panel task-panel"><div class="panel-head"><h3>Aufgaben</h3><button class="text-button" data-go="tasks">Alle ansehen →</button></div><div id="dashboardTasks"></div><button class="secondary full" id="addTaskTop">＋ Aufgabe hinzufügen</button></article>
       </div>
+      <article class="panel family-note-panel"><div class="panel-head"><div><p class="eyebrow">FÜR ALLE SICHTBAR</p><h3>Familiennotiz</h3></div><button class="secondary" id="addSharedNote">＋ Notiz</button></div><div id="dashboardSharedNote"></div></article>
       <article class="panel weather-panel"><div class="weather-icon">☀</div><div><h3>Wetter vor Ort</h3><p id="weatherText" class="subtle">Wetter wird nur mit deiner Zustimmung abgerufen.</p></div><button id="weatherBtn" class="secondary">Wetter laden</button></article>
     </section>
     <section id="calendarView" class="view hidden">
@@ -45,6 +47,15 @@
       <div class="section-heading"><div><p class="eyebrow">GEMEINSAM ERLEDIGEN</p><h2>Aufgaben &amp; Listen</h2></div><button id="addTask" class="primary">＋ Aufgabe</button></div>
       <div class="panel"><div id="taskList"></div></div>
     </section>
+    <section id="peopleView" class="view hidden">
+      <div class="section-heading"><div><p class="eyebrow">UNSER HAUSHALT</p><h2>Personen &amp; Profile</h2></div><button class="primary" id="addPerson">＋ Person</button></div>
+      <div id="peopleList" class="people-grid"></div>
+    </section>
+    <section id="notesView" class="view hidden">
+      <div class="section-heading"><div><p class="eyebrow">NACHRICHTEN &amp; GEDANKEN</p><h2>Notizen</h2></div><button class="primary" id="addNote">＋ Notiz</button></div>
+      <div class="note-filters"><button class="secondary" data-note-filter="all">Alle</button><button class="secondary" data-note-filter="shared">Familie</button><button class="secondary" data-note-filter="personal">Persönlich</button></div>
+      <div id="notesList" class="notes-grid"></div>
+    </section>
     <section id="settingsView" class="view hidden">
       <div class="section-heading"><div><p class="eyebrow">DEINE DATEN</p><h2>Daten &amp; Einstellungen</h2></div></div>
       <div class="settings-grid">
@@ -55,8 +66,10 @@
       </div>
     </section>
   </main>
-  <dialog id="eventDialog"><form id="eventForm" method="dialog"><div class="dialog-head"><h2 id="eventDialogTitle">Termin hinzufügen</h2><button type="button" class="icon-button" data-close="eventDialog">×</button></div><input type="hidden" id="eventId"><label>Titel<input id="eventTitle" required maxlength="160" placeholder="z. B. Fußballtraining"></label><div class="form-row"><label>Beginn<input id="eventStart" type="datetime-local" required></label><label>Ende<input id="eventEnd" type="datetime-local" required></label></div><label class="check-label"><input id="eventAllDay" type="checkbox"> Ganztägig</label><label>Kategorie<select id="eventCategory"></select></label><label>Ort<input id="eventLocation" placeholder="Optional"></label><label>Notiz<textarea id="eventDescription" rows="2" placeholder="Details"></textarea></label><label class="check-label"><input id="eventRecurring" type="checkbox"> Wiederholt sich wöchentlich</label><div class="dialog-actions"><button type="button" class="secondary" data-close="eventDialog">Abbrechen</button><button type="submit" class="primary">Speichern</button></div></form></dialog>
+  <dialog id="eventDialog"><form id="eventForm" method="dialog"><div class="dialog-head"><h2 id="eventDialogTitle">Termin hinzufügen</h2><button type="button" class="icon-button" data-close="eventDialog">×</button></div><input type="hidden" id="eventId"><label>Titel<input id="eventTitle" required maxlength="160" placeholder="z. B. Fußballtraining"></label><div class="form-row"><label>Beginn<input id="eventStart" type="datetime-local" required></label><label>Ende<input id="eventEnd" type="datetime-local" required></label></div><label class="check-label"><input id="eventAllDay" type="checkbox"> Ganztägig</label><label>Kategorie<select id="eventCategory"></select></label><label>Ort<input id="eventLocation" placeholder="Optional"></label><label>Notiz<textarea id="eventDescription" rows="2" placeholder="Details"></textarea></label><label>Für wen ist der Termin?<div id="eventPeopleChoices" class="choice-chips"></div></label><label class="check-label"><input id="eventRecurring" type="checkbox"> Wiederholt sich wöchentlich</label><div class="dialog-actions"><button type="button" class="secondary" data-close="eventDialog">Abbrechen</button><button type="submit" class="primary">Speichern</button></div></form></dialog>
   <dialog id="taskDialog"><form id="taskForm" method="dialog"><div class="dialog-head"><h2>Aufgabe hinzufügen</h2><button type="button" class="icon-button" data-close="taskDialog">×</button></div><label>Aufgabe<input id="taskTitle" required maxlength="160" placeholder="Was ist zu erledigen?"></label><div class="form-row"><label>Fällig am<input id="taskDue" type="date"></label><label>Priorität<select id="taskPriority"><option value="normal">Normal</option><option value="high">Hoch</option><option value="low">Niedrig</option></select></label></div><label>Kategorie<select id="taskCategory"></select></label><div class="dialog-actions"><button type="button" class="secondary" data-close="taskDialog">Abbrechen</button><button type="submit" class="primary">Speichern</button></div></form></dialog>
+  <dialog id="personDialog"><form id="personForm" method="dialog"><div class="dialog-head"><h2 id="personDialogTitle">Person hinzufügen</h2><button type="button" class="icon-button" data-close="personDialog">×</button></div><input type="hidden" id="personId"><label>Name<input id="personName" required maxlength="80" placeholder="z. B. Mama, Papa, Lena"></label><div class="form-row"><label>Farbe<input id="personColor" type="color" value="#71977a"></label><label>Emoji / Symbol<input id="personAvatar" maxlength="4" value="🙂" placeholder="🙂"></label></div><label>Notiz zum Profil<textarea id="personDescription" rows="2" placeholder="Optional"></textarea></label><div class="dialog-actions"><button type="button" class="secondary" data-close="personDialog">Abbrechen</button><button class="primary" type="submit">Profil speichern</button></div></form></dialog>
+  <dialog id="noteDialog"><form id="noteForm" method="dialog"><div class="dialog-head"><h2 id="noteDialogTitle">Neue Notiz</h2><button type="button" class="icon-button" data-close="noteDialog">×</button></div><input type="hidden" id="noteId"><label>Titel<input id="noteTitle" required maxlength="120" placeholder="z. B. Bin einkaufen"></label><label>Nachricht<textarea id="noteBody" required rows="4" maxlength="3000" placeholder="Was soll die Familie wissen?"></textarea></label><label>Art<select id="noteType"><option value="shared">Gemeinsame Familiennotiz</option><option value="personal">Persönliche Notiz</option></select></label><label id="noteOwnerLabel">Für Person<select id="noteOwner"></select></label><div class="form-row"><label>Gültig bis (optional)<input id="noteExpires" type="date"></label><label class="check-label"><input id="noteImportant" type="checkbox"> Wichtig markieren</label></div><div class="dialog-actions"><button type="button" class="secondary" data-close="noteDialog">Abbrechen</button><button class="primary" type="submit">Notiz speichern</button></div></form></dialog>
   <div id="toast" role="status" class="toast hidden"></div>
   <script src="./app.js"></script>
 </body>

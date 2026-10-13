@@ -1,45 +1,45 @@
-# Daely Home – private family calendar PWA
+# Daely Home 2.0 – lokaler Familienkalender
 
-Offline-first, static PWA for GitHub Pages. Calendar records are stored in the browser's IndexedDB; no backend or account is required.
+Eine eigenständige, Daely-inspirierte Familienzentrale als statische Progressive Web App (PWA). Für private Nutzung, optimiert für Tablet-Bildschirme und ohne Serverkonto.
 
-## Features
-- Dashboard with today's agenda and open tasks
-- Month, week and day calendar views
-- Events, categories, weekly recurrence, tasks and priorities
-- JSON export/import
-- Basic `.ics` import
-- Optional weather lookup using Open-Meteo and browser geolocation
-- Kiosk-style full-screen dashboard
-- Service-worker asset caching
+## Funktionen
+- Tages-, Wochen- und Monatskalender
+- Termine mit Kategorie, Ort, Beschreibung, wöchentlicher Wiederholung und Zuordnung zu mehreren Familienprofilen
+- Profile mit Name, Farbe, Emoji und Beschreibung
+- Aufgaben mit Fälligkeit und Priorität
+- Gemeinsame Familiennotizen sowie persönliche Notizen pro Profil, optional wichtig und mit Ablaufdatum
+- Notizübersicht auf dem Dashboard und Kiosk-/Vollbildmodus
+- JSON-Backup und Wiederherstellung für Kategorien, Termine, Aufgaben, Profile und Notizen
+- Basis-Import aus ICS/iCal
+- Optionales Wetter nur nach expliziter Aktion (benötigt Internet und Standortfreigabe)
+- IndexedDB lokale Datenhaltung, Service Worker und lokale Schrift-/CSS-Abhängigkeiten
 
-## Publish on GitHub Pages
-1. Create a GitHub repository, for example `daely-home`.
-2. Upload all files and folders from this project to the repository root.
-3. Open **Settings → Pages**.
-4. Under **Build and deployment**, select **Deploy from a branch**, branch `main`, folder `/(root)`, and save.
-5. Wait for deployment, then open the URL shown by GitHub Pages, usually `https://YOUR-USER.github.io/daely-home/`.
+## Datenschutz und wichtige Grenzen
+- Termine, Profile, Aufgaben und Notizen werden in IndexedDB des Browsers auf diesem Gerät gespeichert.
+- GitHub Pages hostet nur den App-Code. Es synchronisiert private Daten nicht zwischen Geräten.
+- Browserdaten können durch Löschen der Website-Daten verloren gehen. Bitte regelmäßig ein JSON-Backup exportieren und an einem sicheren Ort aufbewahren.
+- „Persönliche“ Notizen sind in dieser lokalen Einzelgeräte-App eine organisatorische Trennung nach Profil, keine Zugangssperre. Wer das Tablet entsperrt nutzt, kann grundsätzlich alle Notizen öffnen.
+- Wetter benötigt eine Internetverbindung. Der Rest der App ist auf lokale Nutzung ausgelegt, sobald die App einmal über HTTPS geladen und vom Service Worker gecacht wurde.
+- Wiederkehrende Termine und ICS-Import sind bewusst einfach gehalten; komplexe RRULEs, Ausnahmen und Zeitzonen werden nicht vollständig verarbeitet.
 
-The app uses relative URLs so it works under a project-site path.
+## Veröffentlichung über GitHub Pages
+1. Alle Dateien und Ordner dieses Projekts ins Repository hochladen; `index.html` muss im Repository-Hauptverzeichnis liegen.
+2. GitHub → Repository → Settings → Pages.
+3. Unter Build and deployment „Deploy from a branch“ auswählen, Branch `main`, Ordner `/(root)`, speichern.
+4. Die angezeigte Pages-URL auf dem Xiaomi-Tablet in Chrome öffnen und „Zum Startbildschirm hinzufügen“ oder „App installieren“ wählen.
 
-## Install on Android / Xiaomi tablet
-1. Open the Pages URL in Chrome.
-2. Open Chrome's ⋮ menu and choose **Install app** or **Add to Home screen**.
-3. Confirm, then launch the new icon. Choose full screen in the app with the Kiosk button.
-4. For a stable wall display, configure Android's screen timeout and optionally pin the app using Android's app-pinning feature.
-
-Installation menu wording and WebAPK behavior depend on Android/Chrome version and whether Google Mobile Services are available.
-
-## Backups and privacy
-Use **Daten & Einstellungen → JSON exportieren** regularly and keep the file somewhere safe. Import replaces existing categories, events and tasks. GitHub Pages serves the code; it does not sync browser data.
-
-Do not put a GitHub personal access token in client-side JavaScript. Anyone who can inspect the deployed code can extract it. For GitHub backups, manually upload the exported JSON to a **private** repository, or add a separate trusted backend/proxy with authentication. A private repository does not make data in a public Pages app private.
-
-## Current limitations
-- ICS import handles common VEVENT fields and retains RRULE text, but does not fully expand every recurrence pattern, timezone, EXDATE or detached occurrence.
-- External ICS URLs may be blocked by CORS. Download the `.ics` file and import it locally, or use a trusted proxy.
-- Local browser data is device/browser-profile-specific; it does not automatically sync across devices.
-- Tailwind and Google Fonts are loaded from external CDNs in this starter. The app's main files are cached, but for strict offline/privacy use, remove those CDN dependencies and use the included CSS/system fonts.
-- This is a functional starter, not a full replacement for a production calendar's conflict handling, accessibility testing, or automated test suite.
-
-## Development
-Serve this folder over localhost (not `file://`) for service-worker testing, e.g. `python -m http.server 8000`, then open `http://localhost:8000`.
+## Ordnerstruktur
+```text
+ daely-home/
+ ├── index.html
+ ├── app.js
+ ├── styles.css
+ ├── manifest.json
+ ├── sw.js
+ ├── README.md
+ ├── .nojekyll
+ └── icons/
+     ├── icon.svg
+     ├── icon-192.png
+     └── icon-512.png
+```
