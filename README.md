@@ -51,3 +51,10 @@ Eine eigenständige, Daely-inspirierte Familienzentrale als statische Progressiv
 - Richte unter „Daten & Einstellungen“ eine 4- bis 8-stellige PIN ein, um Bearbeitungsaktionen zu bestätigen. Die PIN wird als SHA-256-Hash lokal in IndexedDB abgelegt.
 - Hinweis: Das ist eine einfache Sperre innerhalb der App, keine vollständige Sicherheitsgrenze. Jemand mit Zugriff auf Browserdaten oder Entwicklerwerkzeuge könnte sie umgehen. Für stärkeren Schutz nutze zusätzlich die Android-Bildschirmfixierung/Gerätesperre.
 - Daten bleiben lokal auf dem Gerät; der Wetterabruf benötigt Internet.
+
+
+## Version 2.2.0
+- Farbigere Oberfläche und Versionsanzeige.
+- „Aktualisieren“ prüft `version.json` am selben GitHub-Pages-Pfad und leert App-Caches/Service-Worker vor dem Neuladen. Lokale IndexedDB-Daten werden dabei nicht gelöscht.
+- Profile haben Rollen: `child`, `teen`, `adult`. Erwachsene sollen eine PIN einrichten. Hinweis: Die clientseitige PIN ist keine starke Sicherheitsgrenze.
+- Bei GitHub-Updates `version.json` und die Versionskonstante in `app.js` gemeinsam erhöhen. Der Browser kann neue Versionen nur prüfen, wenn GitHub Pages erreichbar ist.
