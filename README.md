@@ -43,3 +43,11 @@ Eine eigenständige, Daely-inspirierte Familienzentrale als statische Progressiv
      ├── icon-192.png
      └── icon-512.png
 ```
+
+
+## Kioskmodus (Version 2.1)
+- Starte den Kioskmodus über „Kiosk“. Die Agenda, Aufgaben und Familiennotiz werden in einer ausgewogenen Tablet-Ansicht angezeigt.
+- Nach 2 Minuten ohne Eingabe erscheint ein dunkler Bildschirmschoner mit Uhrzeit, Datum und der angehefteten Familiennotiz. Berührung oder Tastatureingabe weckt die Agenda wieder.
+- Richte unter „Daten & Einstellungen“ eine 4- bis 8-stellige PIN ein, um Bearbeitungsaktionen zu bestätigen. Die PIN wird als SHA-256-Hash lokal in IndexedDB abgelegt.
+- Hinweis: Das ist eine einfache Sperre innerhalb der App, keine vollständige Sicherheitsgrenze. Jemand mit Zugriff auf Browserdaten oder Entwicklerwerkzeuge könnte sie umgehen. Für stärkeren Schutz nutze zusätzlich die Android-Bildschirmfixierung/Gerätesperre.
+- Daten bleiben lokal auf dem Gerät; der Wetterabruf benötigt Internet.
