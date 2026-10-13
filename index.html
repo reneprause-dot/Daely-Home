@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f7f8f4">
+  <meta name="description" content="Privater, offlinefähiger Familienkalender">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <title>Daely Home – Familienkalender</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="min-h-screen">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">d</span><div><strong>daely home</strong><small>Unser Familienalltag</small></div></div>
+    <div class="header-actions"><span id="todayLabel"></span><button id="kioskBtn" class="quiet">⛶ Kiosk</button></div>
+  </header>
+  <main class="shell">
+    <section class="welcome">
+      <div><p class="eyebrow" id="greeting">GUTEN TAG</p><h1>Alles im Blick.</h1><p class="subtle">Ein ruhiger Überblick für euren Alltag.</p></div>
+      <div class="clock" id="clock">--:--</div>
+    </section>
+    <nav class="tabs" aria-label="Hauptnavigation">
+      <button class="tab active" data-view="dashboard">Übersicht</button>
+      <button class="tab" data-view="calendar">Kalender</button>
+      <button class="tab" data-view="tasks">Aufgaben</button>
+      <button class="tab" data-view="settings">Daten &amp; Einstellungen</button>
+    </nav>
+    <section id="dashboardView" class="view">
+      <div class="section-heading"><div><p class="eyebrow">HEUTE</p><h2 id="dateHeading">Dein Tag</h2></div><button class="primary" id="addEventTop">＋ Termin</button></div>
+      <div class="dashboard-grid">
+        <article class="panel agenda-panel"><div class="panel-head"><h3>Deine Agenda</h3><span class="pill" id="eventCount">0 Termine</span></div><div id="todayAgenda" class="agenda-list"></div></article>
+        <article class="panel task-panel"><div class="panel-head"><h3>Aufgaben</h3><button class="text-button" data-go="tasks">Alle ansehen →</button></div><div id="dashboardTasks"></div><button class="secondary full" id="addTaskTop">＋ Aufgabe hinzufügen</button></article>
+      </div>
+      <article class="panel weather-panel"><div class="weather-icon">☀</div><div><h3>Wetter vor Ort</h3><p id="weatherText" class="subtle">Wetter wird nur mit deiner Zustimmung abgerufen.</p></div><button id="weatherBtn" class="secondary">Wetter laden</button></article>
+    </section>
+    <section id="calendarView" class="view hidden">
+      <div class="section-heading"><div><p class="eyebrow">PLANUNG</p><h2>Kalender</h2></div><button class="primary" id="addEvent">＋ Termin</button></div>
+      <div class="calendar-toolbar"><button id="prevPeriod" class="icon-button" aria-label="Zurück">‹</button><h3 id="periodLabel"></h3><button id="nextPeriod" class="icon-button" aria-label="Weiter">›</button><button id="todayBtn" class="secondary">Heute</button><select id="calendarMode" aria-label="Kalenderansicht"><option value="month">Monat</option><option value="week">Woche</option><option value="day">Tag</option></select></div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+      <div class="panel"><div class="panel-head"><h3>Termine am ausgewählten Tag</h3><span id="selectedDateLabel" class="subtle"></span></div><div id="selectedAgenda" class="agenda-list"></div></div>
+    </section>
+    <section id="tasksView" class="view hidden">
+      <div class="section-heading"><div><p class="eyebrow">GEMEINSAM ERLEDIGEN</p><h2>Aufgaben &amp; Listen</h2></div><button id="addTask" class="primary">＋ Aufgabe</button></div>
+      <div class="panel"><div id="taskList"></div></div>
+    </section>
+    <section id="settingsView" class="view hidden">
+      <div class="section-heading"><div><p class="eyebrow">DEINE DATEN</p><h2>Daten &amp; Einstellungen</h2></div></div>
+      <div class="settings-grid">
+        <article class="panel"><h3>Backup &amp; Wiederherstellung</h3><p class="subtle">Speichere alle lokalen Kalenderdaten als JSON-Datei oder stelle sie wieder her.</p><div class="button-row"><button id="exportBtn" class="primary">JSON exportieren</button><label class="secondary file-label">JSON importieren<input id="importFile" type="file" accept="application/json,.json" hidden></label></div><p id="backupStatus" class="status"></p></article>
+        <article class="panel"><h3>ICS / iCal importieren</h3><p class="subtle">Importiert Termine aus einer lokalen .ics-Datei. Wiederkehrende Regeln werden als Metadaten übernommen; komplexe RRULEs werden nicht vollständig expandiert.</p><label class="secondary file-label">ICS-Datei auswählen<input id="icsFile" type="file" accept=".ics,text/calendar" hidden></label><p id="icsStatus" class="status"></p></article>
+        <article class="panel"><h3>Kategorien</h3><div id="categoryList"></div><div class="category-form"><input id="categoryName" placeholder="Neue Kategorie"><input id="categoryColor" type="color" value="#7c9b83" aria-label="Kategoriefarbe"><button id="addCategory" class="secondary">Hinzufügen</button></div></article>
+        <article class="panel"><h3>Privatsphäre</h3><p>Termine und Aufgaben bleiben auf diesem Gerät. Es wird kein Konto benötigt. Wetter und externe Kalender benötigen eine Internetverbindung.</p><p class="subtle">GitHub Pages veröffentlicht den Programmcode, nicht automatisch deine lokalen IndexedDB-Daten.</p><button id="clearData" class="danger">Alle lokalen Daten löschen</button></article>
+      </div>
+    </section>
+  </main>
+  <dialog id="eventDialog"><form id="eventForm" method="dialog"><div class="dialog-head"><h2 id="eventDialogTitle">Termin hinzufügen</h2><button type="button" class="icon-button" data-close="eventDialog">×</button></div><input type="hidden" id="eventId"><label>Titel<input id="eventTitle" required maxlength="160" placeholder="z. B. Fußballtraining"></label><div class="form-row"><label>Beginn<input id="eventStart" type="datetime-local" required></label><label>Ende<input id="eventEnd" type="datetime-local" required></label></div><label class="check-label"><input id="eventAllDay" type="checkbox"> Ganztägig</label><label>Kategorie<select id="eventCategory"></select></label><label>Ort<input id="eventLocation" placeholder="Optional"></label><label>Notiz<textarea id="eventDescription" rows="2" placeholder="Details"></textarea></label><label class="check-label"><input id="eventRecurring" type="checkbox"> Wiederholt sich wöchentlich</label><div class="dialog-actions"><button type="button" class="secondary" data-close="eventDialog">Abbrechen</button><button type="submit" class="primary">Speichern</button></div></form></dialog>
+  <dialog id="taskDialog"><form id="taskForm" method="dialog"><div class="dialog-head"><h2>Aufgabe hinzufügen</h2><button type="button" class="icon-button" data-close="taskDialog">×</button></div><label>Aufgabe<input id="taskTitle" required maxlength="160" placeholder="Was ist zu erledigen?"></label><div class="form-row"><label>Fällig am<input id="taskDue" type="date"></label><label>Priorität<select id="taskPriority"><option value="normal">Normal</option><option value="high">Hoch</option><option value="low">Niedrig</option></select></label></div><label>Kategorie<select id="taskCategory"></select></label><div class="dialog-actions"><button type="button" class="secondary" data-close="taskDialog">Abbrechen</button><button type="submit" class="primary">Speichern</button></div></form></dialog>
+  <div id="toast" role="status" class="toast hidden"></div>
+  <script src="./app.js"></script>
+</body>
+</html>

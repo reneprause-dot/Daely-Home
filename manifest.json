@@ -1,0 +1,25 @@
+{
+  "name": "Daely Home – Familienkalender",
+  "short_name": "Daely Home",
+  "description": "Privater, lokaler Familienkalender",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f7f8f4",
+  "theme_color": "#f7f8f4",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
